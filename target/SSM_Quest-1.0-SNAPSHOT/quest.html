@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>问题汇总</title>
+    <style type="text/css">
+        div{
+            margin: 0 auto;
+            width: 80%;
+            text-align: center;
+            font-size: 20px;
+        }
+        input{
+            font-size: 20px;
+        }
+    </style>
+    <script type="application/javascript" src="jquery.min.js"></script>
+</head>
+<body>
+<div>
+    <div>
+        <h1>新增问题</h1>
+        <form action="questsave.do" method="post">
+            <label>问题：</label><input name="title" placeholder="请输入问题"><br/>
+            <label>描述：</label><input name="detail" placeholder="请输入问题"><br/>
+            <input type="submit" value="新增问题">
+        </form>
+    </div>
+    <div>
+        <h1>问题列表</h1>
+        <table align="center">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>问题</th>
+                <th>描述</th>
+                <th>时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="tbdata">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(function () {
+       //加载问题列表
+        getData();
+    });
+    //加载列表
+    function getData() {
+        $.get("questall.do",null,function (arr) {
+            $("#tbdata").html("");
+            for(var i=0;i<arr.length;i++){
+                $("#tbdata").append("<tr><td align=\"center\">"+arr[i].id+"</td><td align=\"center\">"+arr[i].title+"</td><td>"+arr[i].detail+"</td><td align=\"center\">"+arr[i].createtime+"</td><td align=\"center\"> <a href='javascript:del("+arr[i].id+")'>删除</a></td></tr>");
+            }
+        })
+    }
+    function del(id) {
+        if(confirm("是否确认删除？")){
+            $.get("questdel.do","id="+id,function (data) {
+                if(data==1){
+                    //删除成功
+                    getData();
+                }else{
+                    //删除失败
+                    alert("服务器繁忙，删除未成功");
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>
